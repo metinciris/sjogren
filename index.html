@@ -309,6 +309,18 @@
             border-width: 2px;
         }
         
+        .option-box.light-green-selected {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+            border-width: 2px;
+        }
+        
+        .option-box.dark-green-selected {
+            background-color: #c8e6c9;
+            border-color: #388e3c;
+            border-width: 2px;
+        }
+        
         .completion-indicator {
             font-size: 24px;
             color: #2ecc71;
@@ -368,7 +380,7 @@
                     <div class="radio-option">
                         <input type="radio" name="yeterlilik" id="yetersiz" value="yetersiz">
                         <label for="yetersiz">Glandüler doku: Yetersiz (minimal 4 mm2)</label>
-                        <input type="number" id="izlenen_mm2" class="input-field" placeholder="İzlenen mm2" min="0" step="0.1" value="1.0">
+                        <input type="number" id="izlenen_mm2" class="input-field" placeholder="İzlenen mm2" min="0" step="1" value="1">
                     </div>
                     <div class="radio-option">
                         <input type="radio" name="yeterlilik" id="yok" value="yok">
@@ -416,17 +428,17 @@
             
             <div class="form-group">
                 <div class="horizontal-options">
-                    <div class="option-box" data-fibrozis="yok">
+                    <div class="option-box selected" data-fibrozis="yok">
                         Fibrozis yok
                     </div>
                     <div class="option-box" data-fibrozis="hafif">
                         Hafif fibrozis
                     </div>
-                    <div class="option-box selected" data-fibrozis="belirgin">
+                    <div class="option-box" data-fibrozis="belirgin">
                         Belirgin fibrozis
                     </div>
                 </div>
-                <input type="hidden" name="fibrozis" id="fibrozis" value="belirgin">
+                <input type="hidden" name="fibrozis" id="fibrozis" value="yok">
             </div>
             
             <div class="form-group">
@@ -564,7 +576,7 @@
                 } else if (yeterlilik === 'sinirli') {
                     report += "Glandüler doku: sınırlı yeterli (minimal 4 mm2)";
                 } else if (yeterlilik === 'yetersiz') {
-                    const izlenen = izlenenInput.value || "1.0";
+                    const izlenen = izlenenInput.value || "1";
                     report += `Glandüler doku: Yetersiz (minimal 4 mm2). İzlenen: ${izlenen} mm2`;
                 } else if (yeterlilik === 'yok') {
                     report += "Glandüler doku yok.";
@@ -766,10 +778,18 @@
                 document.querySelectorAll('.option-box[data-fibrozis]').forEach(box => {
                     const fibrozisValue = box.getAttribute('data-fibrozis');
                     const fibrozisInput = document.getElementById('fibrozis');
+                    
+                    // Tüm sınıfları temizle
+                    box.classList.remove('selected', 'light-green-selected', 'dark-green-selected');
+                    
                     if (fibrozisInput.value === fibrozisValue) {
-                        box.classList.add('selected');
-                    } else {
-                        box.classList.remove('selected');
+                        if (fibrozisValue === 'hafif') {
+                            box.classList.add('light-green-selected');
+                        } else if (fibrozisValue === 'belirgin') {
+                            box.classList.add('dark-green-selected');
+                        } else {
+                            box.classList.add('selected');
+                        }
                     }
                 });
                 
@@ -825,8 +845,8 @@
                 // Fokus: <1 seçeneğini seç
                 document.getElementById('fokus').value = 'az';
                 
-                // Fibrozis: Belirgin seçeneğini seç
-                document.getElementById('fibrozis').value = 'belirgin';
+                // Fibrozis: Fibrozis yok seçeneğini seç
+                document.getElementById('fibrozis').value = 'yok';
                 
                 // Yağlanma: Yok seçeneğini seç
                 document.getElementById('yaglanma').value = 'yok';
@@ -852,7 +872,7 @@
                 });
                 
                 // İzlenen mm2 alanını varsayılan değere ayarla
-                izlenenInput.value = '1.0';
+                izlenenInput.value = '1';
                 
                 // Görsel güncellemeler
                 updateReport();
