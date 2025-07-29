@@ -1,639 +1,997 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sjögren Raporlama</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-    body {
-      margin: 0;
-      padding: 20px;
-      background-color: #f5f5f5;
-    }
-    .container {
-      display: flex;
-      gap: 20px;
-    }
-    #sol {
-      width: 50%;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-    }
-    #sag {
-      width: 50%;
-      background: #f0f8ff;
-      padding: 20px;
-      border-radius: 8px;
-    }
-    h2 {
-      margin-top: 0;
-      margin-bottom: 15px;
-      color: #2c3e50;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 8px;
-    }
-    .btn {
-      display: inline-block;
-      padding: 8px 12px;
-      margin: 5px 5px 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      cursor: pointer;
-      min-width: 100px;
-      text-align: center;
-    }
-    .btn:hover {
-      background-color: #f0f0f0;
-    }
-    .btn-selected {
-      background-color: #007cba;
-      color: white;
-      border-color: #005a87;
-    }
-    .btn.yesil.selected {
-      background-color: #28a745;
-    }
-    .fokus-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    input[type="text"], input[type="number"] {
-      width: 100%;
-      padding: 8px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    .checkbox-row {
-      margin: 8px 0;
-    }
-    #output {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 6px;
-      white-space: pre-wrap;
-      line-height: 1.5;
-    }
-    button {
-      padding: 10px 15px;
-      background: #007cba;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover {
-      background: #005a87;
-    }
-    #copyStatus {
-      color: green;
-      margin-left: 10px;
-      font-size: 13px;
-      visibility: hidden;
-    }
-    .btn-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .custom-bulgu {
-      margin-top: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sjögren Raporlama</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px;
+            background-color: #f5f7fa;
+        }
+        
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .form-section {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        
+        .report-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .report-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 10px;
+            z-index: 10;
+        }
+        
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .report-header h2 {
+            margin: 0;
+            color: #3498db;
+        }
+        
+        .other-findings-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            color: #3498db;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .radio-option:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .radio-option input {
+            margin-right: 10px;
+        }
+        
+        .radio-option.selected {
+            background-color: #e3f2fd;
+            border-left: 4px solid #3498db;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .checkbox-option {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .checkbox-option:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .checkbox-option input {
+            margin-right: 10px;
+        }
+        
+        .checkbox-option.selected {
+            background-color: #e3f2fd;
+            border-left: 4px solid #3498db;
+        }
+        
+        .report-content {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            white-space: pre-line;
+            font-family: 'Courier New', monospace;
+            min-height: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .copy-button, .reset-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .copy-button:hover, .reset-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .reset-button {
+            background-color: #e74c3c;
+        }
+        
+        .reset-button:hover {
+            background-color: #c0392b;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        
+        .stain-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .stain-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .add-stain-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .add-stain-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .remove-stain-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .remove-stain-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .fokus-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .fokus-box {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            min-width: 70px;
+        }
+        
+        .fokus-box:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .fokus-box.selected {
+            background-color: #e3f2fd;
+            border-color: #3498db;
+            border-width: 2px;
+        }
+        
+        .horizontal-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .option-box {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .option-box:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .option-box.selected {
+            background-color: #e3f2fd;
+            border-color: #3498db;
+            border-width: 2px;
+        }
+        
+        .option-box.yellow-selected {
+            background-color: #fff9c4;
+            border-color: #fbc02d;
+            border-width: 2px;
+        }
+        
+        .completion-indicator {
+            font-size: 24px;
+            color: #2ecc71;
+            display: none;
+        }
+        
+        .completion-indicator.show {
+            display: inline-block;
+        }
+        
+        .custom-input-container {
+            margin-top: 15px;
+        }
+        
+        .custom-input-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .custom-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <!-- SOL: Seçenekler -->
-    <div id="sol">
-      <h2>İnceleme Yöntemi</h2>
-      <input type="text" id="boyasec" value="Masson Trikrom boyası" placeholder="Boya adı">
-      
-      <h2>Yeterlilik</h2>
-      <div class="btn-group">
-        <button class="btn" id="yeterli-btn" onclick="setYeterlilik('yeterli')">Yeterli</button>
-        <button class="btn" id="sinirli-btn" onclick="setYeterlilik('sinirli')">Sınırlı</button>
-        <button class="btn" id="yetersiz-btn" onclick="setYeterlilik('yetersiz')">Yetersiz</button>
-      </div>
-      
-      <div id="yetersiz-alan" style="display:none; margin-top:15px;">
-        <label>İzlenen: <input type="number" id="mm2" min="1" max="3" value="1"> mm²</label>
-        <div style="margin-top:10px;">
-          <label><input type="checkbox" id="doku_yok" onchange="toggleDokuYok()"> Glandüler doku yok</label>
-          <input type="text" id="doku_aciklama" placeholder="Açıklama (isteğe bağlı)" style="display:none; width:100%; margin-top:5px;">
-        </div>
-      </div>
-      
-      <div id="gorunen-kisimlar">
-        <h2>Fokus sayısı (4 mm²'de)</h2>
-        <div class="fokus-container">
-          <button class="fokus-btn btn" id="fokus-bir" onclick="setFokus('Bir fokusdan az inflamasyon')">Bir fokusdan az</button>
-          <button class="fokus-btn btn" id="fokus-inflamasyon-yok" onclick="setFokus('İnflamasyon yok')">İnflamasyon yok</button>
-          <button class="fokus-btn btn" id="fokus-1" onclick="setFokus('1 fokus')">1</button>
-          <button class="fokus-btn btn" id="fokus-2" onclick="setFokus('2 fokus')">2</button>
-          <button class="fokus-btn btn" id="fokus-3" onclick="setFokus('3 fokus')">3</button>
-          <button class="fokus-btn btn" id="fokus-4" onclick="setFokus('4 fokus')">4</button>
-          <button class="fokus-btn btn" id="fokus-5" onclick="setFokus('5 fokus')">5</button>
-          <button class="fokus-btn btn" id="fokus-6" onclick="setFokus('6 fokus')">6</button>
-          <button class="fokus-btn btn" id="fokus-7" onclick="setFokus('7 fokus')">7</button>
-          <button class="fokus-btn btn" id="fokus-8" onclick="setFokus('8 veya daha fazla fokus')">8+</button>
+    <div class="container">
+        <div class="form-section">
+            <h2>Seçenekler</h2>
+            
+            <div class="form-group">
+                <label>Boyama Bilgisi</label>
+                <div id="stainsContainer">
+                    <div class="stain-container">
+                        <input type="text" class="stain-input" value="Masson Trikrom boyası" data-stain="Masson Trikrom boyası">
+                        <button class="remove-stain-btn" style="display:none;">Sil</button>
+                    </div>
+                </div>
+                <button class="add-stain-btn" id="addStainBtn">Boyama Ekle</button>
+            </div>
+            
+            <div class="form-group">
+                <label>Yeterlilik</label>
+                <div class="radio-group">
+                    <div class="radio-option selected">
+                        <input type="radio" name="yeterlilik" id="yeterli" value="yeterli" checked>
+                        <label for="yeterli">Glandüler doku: yeterli (minimal 4 mm2)</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="yeterlilik" id="sinirli" value="sinirli">
+                        <label for="sinirli">Glandüler doku: sınırlı yeterli (minimal 4 mm2)</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="yeterlilik" id="yetersiz" value="yetersiz">
+                        <label for="yetersiz">Glandüler doku: Yetersiz (minimal 4 mm2)</label>
+                        <input type="number" id="izlenen_mm2" class="input-field" placeholder="İzlenen mm2" min="0" step="0.1" value="1.0">
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" name="yeterlilik" id="yok" value="yok">
+                        <label for="yok">Glandüler doku yok.</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Fokus Sayısı (4 mm2'de)</label>
+                <div class="fokus-container">
+                    <div class="fokus-box" data-fokus="yok">
+                        Yok
+                    </div>
+                    <div class="fokus-box selected" data-fokus="az">
+                        <1
+                    </div>
+                    <div class="fokus-box" data-fokus="bir">
+                        1
+                    </div>
+                    <div class="fokus-box" data-fokus="iki">
+                        2
+                    </div>
+                    <div class="fokus-box" data-fokus="uc">
+                        3
+                    </div>
+                    <div class="fokus-box" data-fokus="dort">
+                        4
+                    </div>
+                    <div class="fokus-box" data-fokus="bes">
+                        5
+                    </div>
+                    <div class="fokus-box" data-fokus="alti">
+                        6
+                    </div>
+                    <div class="fokus-box" data-fokus="yedi">
+                        7
+                    </div>
+                    <div class="fokus-box" data-fokus="sekiz">
+                        8+
+                    </div>
+                </div>
+                <input type="hidden" name="fokus" id="fokus" value="az">
+            </div>
+            
+            <div class="form-group">
+                <div class="horizontal-options">
+                    <div class="option-box" data-fibrozis="yok">
+                        Fibrozis yok
+                    </div>
+                    <div class="option-box" data-fibrozis="hafif">
+                        Hafif fibrozis
+                    </div>
+                    <div class="option-box selected" data-fibrozis="belirgin">
+                        Belirgin fibrozis
+                    </div>
+                </div>
+                <input type="hidden" name="fibrozis" id="fibrozis" value="belirgin">
+            </div>
+            
+            <div class="form-group">
+                <div class="horizontal-options">
+                    <div class="option-box selected" data-yaglanma="yok">
+                        Yağlanma yok
+                    </div>
+                    <div class="option-box" data-yaglanma="var">
+                        Yağlanma var
+                    </div>
+                </div>
+                <input type="hidden" name="yaglanma" id="yaglanma" value="yok">
+            </div>
         </div>
         
-        <h2>Fibrozis / Yağlanma</h2>
-        <div class="btn-group">
-          <button class="btn yesil" id="fibrozis-yok" onclick="setFibrozis('Fibrozis yok')">Fibrozis yok</button>
-          <button class="btn" id="fibrozis-hafif" onclick="setFibrozis('Hafif fibrozis')">Hafif fibrozis</button>
-          <button class="btn" id="fibrozis-belirgin" onclick="setFibrozis('Belirgin fibrozis')">Belirgin fibrozis</button>
-          
-          <button class="btn yesil" id="yaglanma-yok" onclick="setYaglanma('Yağlanma yok')">Yağlanma yok</button>
-          <button class="btn" id="yaglanma-var" onclick="setYaglanma('Yağlanma var')">Yağlanma var</button>
+        <div class="report-section">
+            <div class="report-container">
+                <div class="report-header">
+                    <h2>Rapor</h2>
+                    <button class="reset-button" id="resetButton">Sıfırla</button>
+                </div>
+                <div class="report-content" id="reportContent">
+                    <!-- Rapor içeriği burada görünecek -->
+                </div>
+                <div class="button-group">
+                    <button class="copy-button" id="copyButton">
+                        <span>Kopyala</span>
+                        <span class="completion-indicator" id="completionIndicator">✅</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="other-findings-section">
+                <h2>Diğer Bulgular</h2>
+                <div class="checkbox-group">
+                    <div class="checkbox-option selected">
+                        <input type="checkbox" id="en_yogun" checked>
+                        <label for="en_yogun">Fokus sayımında en yoğun 4 mm2 alan değerlendirilmiştir.</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="toplam">
+                        <label for="toplam">Fokus sayımında tüm gland yapılarındaki toplam sayı verilmiştir.</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="plazma_nadir">
+                        <label for="plazma_nadir">Nadir plazma hücresi izlenmiştir.</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="plazma_topluluk">
+                        <label for="plazma_topluluk">Plazma hücresi topluluğu (>10 hücre) izlenmiştir.</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="onkositik">
+                        <label for="onkositik">Duktuslarda onkositik metaplazi vardır.</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="dev_konfluen">
+                        <label for="dev_konfluen">Dev / Konfluen fokus vardır.</label>
+                    </div>
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="germinal">
+                        <label for="germinal">Germinal merkez izlenmiştir.</label>
+                    </div>
+                </div>
+                
+                <div class="custom-input-container">
+                    <label class="custom-input-label" for="customOther">Diğer Bulgular (Özel)</label>
+                    <input type="text" id="customOther" class="custom-input" placeholder="Diğer bulguları buraya yazın...">
+                </div>
+            </div>
         </div>
-        
-        <h2>Ek Bulgular</h2>
-        <div class="checkbox-row">
-          <label><input type="checkbox" id="ek1" onchange="updateReport()"> Dev / Konfluen fokus vardır.</label>
-        </div>
-        <div class="checkbox-row">
-          <label><input type="checkbox" id="ek2" onchange="updateReport()"> Germinal merkez izlenmiştir.</label>
-        </div>
-        <div class="checkbox-row">
-          <label><input type="checkbox" id="ek3" onchange="updateReport()"> Nadir plazma hücresi izlenmiştir.</label>
-        </div>
-        <div class="checkbox-row">
-          <label><input type="checkbox" id="ek4" onchange="updateReport()"> Plazma hücresi topluluğu (>10 hücre) izlenmiştir.</label>
-        </div>
-        <div class="checkbox-row">
-          <label><input type="checkbox" id="ek5" onchange="updateReport()"> Duktuslarda onkositik metaplazi vardır.</label>
-        </div>
-        
-        <div class="custom-bulgu">
-          <div class="checkbox-row">
-            <label><input type="checkbox" id="customCheck" onchange="toggleCustomBulgu()"> Diğer ek bulgu</label>
-          </div>
-          <input type="text" id="customText" placeholder="Açıklama (isteğe bağlı)" style="display:none; width:100%;">
-        </div>
-      </div>
-      
-      <button id="resetBtn" style="background-color:#dc3545; margin-top:25px;">Rapor Sıfırla</button>
     </div>
     
-    <!-- SAĞ: Rapor -->
-    <div id="sag">
-      <div>
-        <pre id="output"></pre>
-        <button id="copyBtn">
-          Kopyala
-          <span id="copyStatus">Kopyalandı</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Temel veri modeli
-    const data = {
-      boya: "Masson Trikrom boyası",
-      yeterlilik: "Yeterlilik: Glandüler doku: yeterli (minimal 4 mm2)",
-      fokus: "Fokus sayısı (4 mm2'de): Bir fokusdan az inflamasyon",
-      fibrozis: "Fibrozis: Belirgin fibrozis",
-      yaglanma: "Yağlanma: Yağlanma yok"
-    };
+    <div class="notification" id="notification">Rapor panoya kopyalandı!</div>
     
-    // Buton ID'lerini tutan nesne
-    const buttonIds = {
-      yeterlik: {
-        yeterli: 'yeterli-btn',
-        sinirli: 'sinirli-btn',
-        yetersiz: 'yetersiz-btn'
-      },
-      fokus: {
-        bir: 'fokus-bir',
-        inflamasyonYok: 'fokus-inflamasyon-yok',
-        f1: 'fokus-1',
-        f2: 'fokus-2',
-        f3: 'fokus-3',
-        f4: 'fokus-4',
-        f5: 'fokus-5',
-        f6: 'fokus-6',
-        f7: 'fokus-7',
-        f8: 'fokus-8'
-      },
-      fibrozis: {
-        yok: 'fibrozis-yok',
-        hafif: 'fibrozis-hafif',
-        belirgin: 'fibrozis-belirgin'
-      },
-      yaglanma: {
-        yok: 'yaglanma-yok',
-        var: 'yaglanma-var'
-      }
-    };
-    
-    // Tüm butonları sıfırla
-    function resetAllButtons() {
-      // Yeterlilik butonları
-      document.getElementById(buttonIds.yeterlik.yeterli).classList.remove('btn-selected');
-      document.getElementById(buttonIds.yeterlik.sinirli).classList.remove('btn-selected');
-      document.getElementById(buttonIds.yeterlik.yetersiz).classList.remove('btn-selected');
-      
-      // Fokus butonları
-      Object.values(buttonIds.fokus).forEach(id => {
-        document.getElementById(id).classList.remove('btn-selected');
-      });
-      
-      // Fibrozis butonları
-      Object.values(buttonIds.fibrozis).forEach(id => {
-        document.getElementById(id).classList.remove('btn-selected');
-        if (id === buttonIds.fibrozis.yok) {
-          document.getElementById(id).classList.add('yesil');
-        }
-      });
-      
-      // Yağlanma butonları
-      Object.values(buttonIds.yaglanma).forEach(id => {
-        document.getElementById(id).classList.remove('btn-selected');
-        if (id === buttonIds.yaglanma.yok) {
-          document.getElementById(id).classList.add('yesil');
-        }
-      });
-    }
-    
-    // Yeterlilik ayarla
-    function setYeterlilik(type) {
-      resetAllButtons();
-      
-      // Seçilen butona işaretle
-      document.getElementById(buttonIds.yeterlik[type]).classList.add('btn-selected');
-      
-      if (type === 'yeterli') {
-        data.yeterlilik = "Yeterlilik: Glandüler doku: yeterli (minimal 4 mm2)";
-        document.getElementById('yetersiz-alan').style.display = 'none';
-        document.getElementById('gorunen-kisimlar').style.display = 'block';
-      } else if (type === 'sinirli') {
-        data.yeterlilik = "Yeterlilik: Glandüler doku: sınırlı yeterli";
-        document.getElementById('yetersiz-alan').style.display = 'none';
-        document.getElementById('gorunen-kisimlar').style.display = 'block';
-      } else if (type === 'yetersiz') {
-        const mm2 = document.getElementById('mm2').value;
-        data.yeterlilik = `Yeterlilik: Glandüler doku: Yetersiz (minimal 4 mm2). İzlenen: ${mm2} mm²`;
-        document.getElementById('yetersiz-alan').style.display = 'block';
-        document.getElementById('gorunen-kisimlar').style.display = 'block';
-      }
-      
-      updateReport();
-    }
-    
-    // Doku yok seçeneği
-    function toggleDokuYok() {
-      if (document.getElementById('doku_yok').checked) {
-        const aciklama = document.getElementById('doku_aciklama').value.trim();
-        data.yeterlilik = `Yeterlilik: Glandüler doku yok${aciklama ? '. ' + aciklama : ''}`;
-        document.getElementById('doku_aciklama').style.display = 'block';
-        document.getElementById('gorunen-kisimlar').style.display = 'none';
-      } else {
-        const mm2 = document.getElementById('mm2').value;
-        data.yeterlilik = `Yeterlilik: Glandüler doku: Yetersiz (minimal 4 mm2). İzlenen: ${mm2} mm²`;
-        document.getElementById('doku_aciklama').style.display = 'none';
-        document.getElementById('gorunen-kisimlar').style.display = 'block';
-      }
-      updateReport();
-    }
-    
-    // Fokus ayarla
-    function setFokus(val) {
-      resetAllButtons();
-      document.getElementById(buttonIds.yeterlik.yeterli).classList.add('btn-selected');
-      
-      // Fokus butonlarını ayarla
-      if (val === 'Bir fokusdan az inflamasyon') {
-        document.getElementById(buttonIds.fokus.bir).classList.add('btn-selected');
-      } else if (val === 'İnflamasyon yok') {
-        document.getElementById(buttonIds.fokus.inflamasyonYok).classList.add('btn-selected');
-      } else if (val === '1 fokus') {
-        document.getElementById(buttonIds.fokus.f1).classList.add('btn-selected');
-      } else if (val === '2 fokus') {
-        document.getElementById(buttonIds.fokus.f2).classList.add('btn-selected');
-      } else if (val === '3 fokus') {
-        document.getElementById(buttonIds.fokus.f3).classList.add('btn-selected');
-      } else if (val === '4 fokus') {
-        document.getElementById(buttonIds.fokus.f4).classList.add('btn-selected');
-      } else if (val === '5 fokus') {
-        document.getElementById(buttonIds.fokus.f5).classList.add('btn-selected');
-      } else if (val === '6 fokus') {
-        document.getElementById(buttonIds.fokus.f6).classList.add('btn-selected');
-      } else if (val === '7 fokus') {
-        document.getElementById(buttonIds.fokus.f7).classList.add('btn-selected');
-      } else if (val === '8 veya daha fazla fokus') {
-        document.getElementById(buttonIds.fokus.f8).classList.add('btn-selected');
-      }
-      
-      data.fokus = `Fokus sayısı (4 mm2'de): ${val}`;
-      updateReport();
-    }
-    
-    // Fibrozis ayarla
-    function setFibrozis(val) {
-      resetAllButtons();
-      document.getElementById(buttonIds.yeterlik.yeterli).classList.add('btn-selected');
-      
-      // Fibrozis butonlarını ayarla
-      if (val === 'Fibrozis yok') {
-        document.getElementById(buttonIds.fibrozis.yok).classList.add('btn-selected');
-        document.getElementById(buttonIds.fibrozis.yok).classList.remove('yesil');
-      } else if (val === 'Hafif fibrozis') {
-        document.getElementById(buttonIds.fibrozis.hafif).classList.add('btn-selected');
-      } else if (val === 'Belirgin fibrozis') {
-        document.getElementById(buttonIds.fibrozis.belirgin).classList.add('btn-selected');
-      }
-      
-      data.fibrozis = `Fibrozis: ${val}`;
-      updateReport();
-    }
-    
-    // Yağlanma ayarla
-    function setYaglanma(val) {
-      resetAllButtons();
-      document.getElementById(buttonIds.yeterlik.yeterli).classList.add('btn-selected');
-      
-      // Yağlanma butonlarını ayarla
-      if (val === 'Yağlanma yok') {
-        document.getElementById(buttonIds.yaglanma.yok).classList.add('btn-selected');
-        document.getElementById(buttonIds.yaglanma.yok).classList.remove('yesil');
-      } else if (val === 'Yağlanma var') {
-        document.getElementById(buttonIds.yaglanma.var).classList.add('btn-selected');
-      }
-      
-      data.yaglanma = `Yağlanma: ${val}`;
-      updateReport();
-    }
-    
-    // Yazılabilir ek bulgu alanı toggle
-    function toggleCustomBulgu() {
-      const isChecked = document.getElementById('customCheck').checked;
-      document.getElementById('customText').style.display = isChecked ? 'block' : 'none';
-      if (isChecked) {
-        document.getElementById('customText').focus();
-      }
-      updateReport();
-    }
-    
-    // Rapor güncelle
-    function updateReport() {
-      // Boya güncelle
-      data.boya = document.getElementById('boyasec').value.trim() || 'Masson Trikrom boyası';
-      
-      // Yetersiz durumunda mm2'yi güncelle
-      if (document.getElementById('yetersiz-alan').style.display === 'block' && 
-          !document.getElementById('doku_yok').checked) {
-        const mm2 = document.getElementById('mm2').value;
-        data.yeterlilik = `Yeterlilik: Glandüler doku: Yetersiz (minimal 4 mm2). İzlenen: ${mm2} mm²`;
-      }
-      
-      // Doku yok durumunda açıklamayı güncelle
-      if (document.getElementById('doku_yok').checked) {
-        const aciklama = document.getElementById('doku_aciklama').value.trim();
-        data.yeterlilik = `Yeterlilik: Glandüler doku yok${aciklama ? '. ' + aciklama : ''}`;
-      }
-      
-      // Rapor metnini oluştur
-      let rapor = `Üç lam seri kesit ve fibrozis değerlendirmesinde ${data.boya} ile incelenmiştir.\n`;
-      rapor += `${data.yeterlilik}\n`;
-      
-      if (!data.yeterlilik.includes('Glandüler doku yok')) {
-        rapor += `${data.fokus}\n`;
-        rapor += `${data.fibrozis}\n`;
-        rapor += `${data.yaglanma}\n`;
-        
-        // Ek bulguları ekle
-        const ekBulgular = [];
-        if (document.getElementById('ek1').checked) ekBulgular.push('Dev / Konfluen fokus vardır.');
-        if (document.getElementById('ek2').checked) ekBulgular.push('Germinal merkez izlenmiştir.');
-        if (document.getElementById('ek3').checked) ekBulgular.push('Nadir plazma hücresi izlenmiştir.');
-        if (document.getElementById('ek4').checked) ekBulgular.push('Plazma hücresi topluluğu (>10 hücre) izlenmiştir.');
-        if (document.getElementById('ek5').checked) ekBulgular.push('Duktuslarda onkositik metaplazi vardır.');
-        if (document.getElementById('customCheck').checked && document.getElementById('customText').value.trim()) {
-          ekBulgular.push(document.getElementById('customText').value.trim());
-        }
-        
-        if (ekBulgular.length > 0) {
-          rapor += `Diğer: Fokus sayımında en yoğun 4 mm2 alan değerlendirilmiştir. ${ekBulgular.join(', ')}\n`;
-        } else {
-          rapor += "Diğer: Fokus sayımında en yoğun 4 mm2 alan değerlendirilmiştir.\n";
-        }
-        
-        // Tanı oluştur
-        rapor += '\nTanı: ';
-        
-        if (data.yeterlilik.includes('Yetersiz')) {
-          rapor += 'Minör tükrük bezi biyopsisi: Nondiagnostik\n';
-          rapor += '\tFokus yok';
-        } else if (data.fokus.includes('İnflamasyon yok')) {
-          rapor += 'Minör tükrük bezi biyopsisi: Normal görünümlü minör tükürük bezi\n';
-          rapor += '\tFokus yok';
-        } else if (data.fokus.includes('Bir fokusdan az')) {
-          if (data.fibrozis.includes('Belirgin')) {
-            rapor += 'Minör tükrük bezi biyopsisi: Bir fokustan az inflamasyon, ancak belirgin fibrozis vardır\n';
-          } else if (data.fibrozis.includes('Hafif')) {
-            rapor += 'Minör tükrük bezi biyopsisi: Fokal lenfositik inflamasyon (Bir fokusdan az), hafif fibrozis\n';
-          } else {
-            rapor += 'Minör tükrük bezi biyopsisi: Fokal lenfositik inflamasyon (Bir fokusdan az), fibrozis yok\n';
-          }
-          rapor += '\tFokus yok';
-        } else if (data.fokus.includes('1 fokus')) {
-          if (data.fibrozis.includes('Belirgin')) {
-            rapor += 'Minör tükrük bezi biyopsisi: Fokal lenfositik inflamasyon (Bir fokus), belirgin fibrozis\n';
-          } else if (data.fibrozis.includes('Hafif')) {
-            rapor += 'Minör tükrük bezi biyopsisi: Fokal lenfositik inflamasyon (Bir fokus), hafif fibrozis\n';
-          } else {
-            rapor += 'Minör tükrük bezi biyopsisi: Fokal lenfositik inflamasyon (Bir fokus), fibrozis yok\n';
-          }
-          rapor += '\tFokus sayısı: 1';
-        } else if (data.fokus.includes('2 fokus')) {
-          if (data.fibrozis.includes('Belirgin')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, belirgin fibrozis\n';
-          } else if (data.fibrozis.includes('Hafif')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, hafif fibrozis\n';
-          } else {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, fibrozis yok\n';
-          }
-          rapor += '\tFokus sayısı: 2';
-        } else if (data.fokus.includes('3 fokus')) {
-          if (data.fibrozis.includes('Belirgin')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, belirgin fibrozis\n';
-          } else if (data.fibrozis.includes('Hafif')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, hafif fibrozis\n';
-          } else {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, fibrozis yok\n';
-          }
-          rapor += '\tFokus sayısı: 3';
-        } else if (data.fokus.includes('4 fokus')) {
-          if (data.fibrozis.includes('Belirgin')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, belirgin fibrozis\n';
-          } else if (data.fibrozis.includes('Hafif')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, hafif fibrozis\n';
-          } else {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, fibrozis yok\n';
-          }
-          rapor += '\tFokus sayısı: 4';
-        } else if (data.fokus.includes('5 fokus')) {
-          if (data.fibrozis.includes('Belirgin')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, belirgin fibrozis\n';
-          } else if (data.fibrozis.includes('Hafif')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, hafif fibrozis\n';
-          } else {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, fibrozis yok\n';
-          }
-          rapor += '\tFokus sayısı: 5';
-        } else if (data.fokus.includes('6 fokus')) {
-          if (data.fibrozis.includes('Belirgin')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, belirgin fibrozis\n';
-          } else if (data.fibrozis.includes('Hafif')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, hafif fibrozis\n';
-          } else {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, fibrozis yok\n';
-          }
-          rapor += '\tFokus sayısı: 6';
-        } else if (data.fokus.includes('7 fokus')) {
-          if (data.fibrozis.includes('Belirgin')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, belirgin fibrozis\n';
-          } else if (data.fibrozis.includes('Hafif')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, hafif fibrozis\n';
-          } else {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, fibrozis yok\n';
-          }
-          rapor += '\tFokus sayısı: 7';
-        } else if (data.fokus.includes('8 veya')) {
-          if (data.fibrozis.includes('Belirgin')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, belirgin fibrozis\n';
-          } else if (data.fibrozis.includes('Hafif')) {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, hafif fibrozis\n';
-          } else {
-            rapor += 'Minör tükürük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, fibrozis yok\n';
-          }
-          rapor += '\t8 veya daha fazla fokus';
-        }
-      } else {
-        rapor += '\nTanı: Minör tükrük bezi biyopsisi: Nondiagnostik\n';
-        rapor += '\tFokus yok';
-      }
-      
-      // Raporu göster
-      document.getElementById('output').textContent = rapor;
-    }
-    
-    // Rapor kopyala
-    function copyReport() {
-      const text = document.getElementById('output').textContent;
-      navigator.clipboard.writeText(text).then(() => {
-        const status = document.getElementById('copyStatus');
-        status.style.visibility = 'visible';
-        setTimeout(() => {
-          status.style.visibility = 'hidden';
-        }, 2000);
-      }).catch(err => {
-        console.error('Kopyalama hatası:', err);
-      });
-    }
-    
-    // Rapor sıfırla
-    function resetReport() {
-      // Temel verileri sıfırla
-      data.boya = "Masson Trikrom boyası";
-      data.yeterlilik = "Yeterlilik: Glandüler doku: yeterli (minimal 4 mm2)";
-      data.fokus = "Fokus sayısı (4 mm2'de): Bir fokusdan az inflamasyon";
-      data.fibrozis = "Fibrozis: Belirgin fibrozis";
-      data.yaglanma = "Yağlanma: Yağlanma yok";
-      
-      // Form elemanlarını sıfırla
-      document.getElementById('boyasec').value = "Masson Trikrom boyası";
-      document.getElementById('mm2').value = "1";
-      document.getElementById('doku_yok').checked = false;
-      document.getElementById('doku_aciklama').value = "";
-      document.getElementById('doku_aciklama').style.display = 'none';
-      document.getElementById('yetersiz-alan').style.display = 'none';
-      document.getElementById('gorunen-kisimlar').style.display = 'block';
-      
-      // Ek bulguları sıfırla
-      document.getElementById('ek1').checked = false;
-      document.getElementById('ek2').checked = false;
-      document.getElementById('ek3').checked = false;
-      document.getElementById('ek4').checked = false;
-      document.getElementById('ek5').checked = false;
-      document.getElementById('customCheck').checked = false;
-      document.getElementById('customText').value = "";
-      document.getElementById('customText').style.display = 'none';
-      
-      // Buton seçimlerini sıfırla
-      resetAllButtons();
-      
-      // Varsayılan seçimleri ayarla
-      document.getElementById(buttonIds.yeterlik.yeterli).classList.add('btn-selected');
-      document.getElementById(buttonIds.fokus.bir).classList.add('btn-selected');
-      document.getElementById(buttonIds.fibrozis.belirgin).classList.add('btn-selected');
-      document.getElementById(buttonIds.yaglanma.yok).classList.add('btn-selected');
-      document.getElementById(buttonIds.fibrozis.yok).classList.add('yesil');
-      document.getElementById(buttonIds.yaglanma.yok).classList.add('yesil');
-      
-      // Raporu güncelle
-      updateReport();
-    }
-    
-    // Sayfa yüklendiğinde
-    window.onload = function() {
-      // Varsayılan değerleri ayarla
-      document.getElementById('boyasec').value = "Masson Trikrom boyası";
-      
-      // Buton seçimlerini ayarla
-      document.getElementById(buttonIds.yeterlik.yeterli).classList.add('btn-selected');
-      document.getElementById(buttonIds.fokus.bir).classList.add('btn-selected');
-      document.getElementById(buttonIds.fibrozis.belirgin).classList.add('btn-selected');
-      document.getElementById(buttonIds.yaglanma.yok).classList.add('btn-selected');
-      
-      // Alan görünürlüklerini ayarla
-      document.getElementById('yetersiz-alan').style.display = 'none';
-      
-      // Raporu güncelle
-      updateReport();
-      
-      // Sıfırlama butonuna event ekle
-      document.getElementById('resetBtn').addEventListener('click', resetReport);
-      
-      // Kopyala butonuna event ekle
-      document.getElementById('copyBtn').addEventListener('click', copyReport);
-      
-      // Boya inputuna event ekle
-      document.getElementById('boyasec').addEventListener('input', updateReport);
-      
-      // mm2 inputuna event ekle
-      document.getElementById('mm2').addEventListener('input', function() {
-        if (!document.getElementById('doku_yok').checked) {
-          updateReport();
-        }
-      });
-      
-      // Doku açıklamasına event ekle
-      document.getElementById('doku_aciklama').addEventListener('input', function() {
-        if (document.getElementById('doku_yok').checked) {
-          updateReport();
-        }
-      });
-      
-      // Custom ek bulgu inputuna event ekle
-      document.getElementById('customText').addEventListener('input', updateReport);
-    };
-  </script>
-  
-  <style>
-    #copyStatus {
-      font-size: 12px;
-      margin-left: 5px;
-    }
-  </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Rapor içeriği alanı
+            const reportContent = document.getElementById('reportContent');
+            
+            // Kopyala butonu
+            const copyButton = document.getElementById('copyButton');
+            
+            // Sıfırla butonu
+            const resetButton = document.getElementById('resetButton');
+            
+            // Bildirim alanı
+            const notification = document.getElementById('notification');
+            
+            // Tamamlama göstergesi
+            const completionIndicator = document.getElementById('completionIndicator');
+            
+            // Boyama ekleme butonu
+            const addStainBtn = document.getElementById('addStainBtn');
+            
+            // Boyama konteyneri
+            const stainsContainer = document.getElementById('stainsContainer');
+            
+            // İzlenen mm2 inputu
+            const izlenenInput = document.getElementById('izlenen_mm2');
+            
+            // Diğer bulgular özel input
+            const customOtherInput = document.getElementById('customOther');
+            
+            // Raporu güncelleme fonksiyonu
+            function updateReport() {
+                // Başlangıç metni
+                let report = "Üç lam seri kesit ";
+                
+                // Boyama bilgilerini al
+                const stainInputs = stainsContainer.querySelectorAll('.stain-input');
+                const stains = [];
+                stainInputs.forEach(input => {
+                    if (input.value.trim() !== '') {
+                        stains.push(input.value.trim());
+                    }
+                });
+                
+                if (stains.length > 0) {
+                    if (stains.length === 1) {
+                        report += `ve ${stains[0]} `;
+                    } else {
+                        report += `ve ${stains.join(', ')} `;
+                    }
+                }
+                
+                report += "ile incelenmiştir.\n\n";
+                
+                // Yeterlilik bilgisi
+                report += "Yeterlilik:\t";
+                const yeterlilik = document.querySelector('input[name="yeterlilik"]:checked').value;
+                
+                if (yeterlilik === 'yeterli') {
+                    report += "Glandüler doku: yeterli (minimal 4 mm2)";
+                } else if (yeterlilik === 'sinirli') {
+                    report += "Glandüler doku: sınırlı yeterli (minimal 4 mm2)";
+                } else if (yeterlilik === 'yetersiz') {
+                    const izlenen = izlenenInput.value || "1.0";
+                    report += `Glandüler doku: Yetersiz (minimal 4 mm2). İzlenen: ${izlenen} mm2`;
+                } else if (yeterlilik === 'yok') {
+                    report += "Glandüler doku yok.";
+                }
+                
+                report += "\n";
+                
+                // Eğer glandüler doku yoksa, fokus, yağlanma ve diğer bilgileri atla
+                if (yeterlilik !== 'yok') {
+                    // Fokus sayısı bilgisi
+                    report += "Fokus sayısı (4 mm2'de):\t";
+                    const fokus = document.getElementById('fokus').value;
+                    
+                    if (fokus === 'yok') {
+                        report += "İnflamasyon yok";
+                    } else if (fokus === 'az') {
+                        report += "Bir fokusdan az inflamasyon";
+                    } else if (fokus === 'bir') {
+                        report += "Bir fokus inflamasyon. (Fokus: 50 lenfosit topluluğu)";
+                    } else if (fokus === 'iki') {
+                        report += "İki fokus. (Fokus: 50 lenfosit topluluğu.)";
+                    } else if (fokus === 'uc') {
+                        report += "Üç fokus. (Fokus: 50 lenfosit topluluğu.)";
+                    } else if (fokus === 'dort') {
+                        report += "Dört fokus. (Fokus: 50 lenfosit topluluğu.)";
+                    } else if (fokus === 'bes') {
+                        report += "Beş fokus. (Fokus: 50 lenfosit topluluğu.)";
+                    } else if (fokus === 'alti') {
+                        report += "Altı fokus. (Fokus: 50 lenfosit topluluğu.)";
+                    } else if (fokus === 'yedi') {
+                        report += "Yedi fokus. (Fokus: 50 lenfosit topluluğu.)";
+                    } else if (fokus === 'sekiz') {
+                        report += "Sekiz veya daha fazla fokus. (Fokus: 50 lenfosit topluluğu.)";
+                    }
+                    
+                    report += "\n";
+                    
+                    // Fibrozis bilgisi
+                    report += "Fibrozis:\t";
+                    const fibrozis = document.getElementById('fibrozis').value;
+                    
+                    if (fibrozis === 'yok') {
+                        report += "Fibrozis yok";
+                    } else if (fibrozis === 'hafif') {
+                        report += "Hafif fibrozis";
+                    } else if (fibrozis === 'belirgin') {
+                        report += "Belirgin fibrozis";
+                    }
+                    
+                    report += "\n";
+                    
+                    // Yağlanma bilgisi
+                    report += "Yağlanma:\t";
+                    const yaglanma = document.getElementById('yaglanma').value;
+                    
+                    if (yaglanma === 'yok') {
+                        report += "Yağlanma yok";
+                    } else if (yaglanma === 'var') {
+                        report += "Yağlanma var";
+                    }
+                    
+                    report += "\n";
+                    
+                    // Diğer bilgiler
+                    const otherItems = [];
+                    if (document.getElementById('en_yogun').checked) otherItems.push("Fokus sayımında en yoğun 4 mm2 alan değerlendirilmiştir.");
+                    if (document.getElementById('toplam').checked) otherItems.push("Fokus sayımında tüm gland yapılarındaki toplam sayı verilmiştir.");
+                    if (document.getElementById('plazma_nadir').checked) otherItems.push("Nadir plazma hücresi izlenmiştir.");
+                    if (document.getElementById('plazma_topluluk').checked) otherItems.push("Plazma hücresi topluluğu (>10 hücre) izlenmiştir.");
+                    if (document.getElementById('onkositik').checked) otherItems.push("Duktuslarda onkositik metaplazi vardır.");
+                    if (document.getElementById('dev_konfluen').checked) otherItems.push("Dev / Konfluen fokus vardır.");
+                    if (document.getElementById('germinal').checked) otherItems.push("Germinal merkez izlenmiştir.");
+                    
+                    // Özel diğer bulgular
+                    const customOther = customOtherInput.value.trim();
+                    if (customOther) {
+                        otherItems.push(customOther);
+                    }
+                    
+                    if (otherItems.length > 0) {
+                        report += "Diğer:\t" + otherItems.join(" ");
+                    }
+                }
+                
+                report += "\n\n";
+                
+                // Tanı bilgisi
+                report += "Tanı:\t";
+                
+                // Tanıyı belirleme mantığı
+                if (yeterlilik === 'yetersiz' || yeterlilik === 'yok') {
+                    report += "Minör tükrük bezi biyopsisi: Nondiagnostik";
+                } else {
+                    // Fokus ve fibrozis durumlarına göre tanı
+                    const fokus = document.getElementById('fokus').value;
+                    const fibrozis = document.getElementById('fibrozis').value;
+                    
+                    // Özel durum: Fokus yok ve fibrozis belirgin
+                    if (fokus === 'yok' && fibrozis === 'belirgin') {
+                        report += "İnflamasyon yok, ancak belirgin fibrozis var";
+                    } 
+                    // Diğer durumlar
+                    else if (fokus === 'yok' && fibrozis === 'yok') {
+                        report += "Minör tükrük bezi biyopsisi: Normal görünümlü minör tükrük bezi";
+                    } else if (fokus === 'az' && fibrozis === 'yok') {
+                        report += "Minör tükrük bezi biyopsisi: Fokal lenfositik inflamasyon (Bir fokusdan az), fibrozis yok";
+                    } else if (fokus === 'yok' && fibrozis === 'hafif') {
+                        report += "Minör tükrük bezi biyopsisi: İnflamasyon yok, ancak hafif fibrozis vardır";
+                    } else if (fokus === 'az' && fibrozis === 'hafif') {
+                        report += "Minör tükrük bezi biyopsisi: Fokal lenfositik inflamasyon (Bir fokusdan az), hafif fibrozis";
+                    } else if (fokus === 'az' && fibrozis === 'belirgin') {
+                        report += "Minör tükrük bezi biyopsisi: Bir fokustan az inflamasyon, ancak belirgin fibrozis vardır";
+                    } else if (fokus === 'bir' && fibrozis === 'yok') {
+                        report += "Minör tükrük bezi biyopsisi: Fokal lenfositik inflamasyon (Bir fokus), fibrozis yok";
+                    } else if (fokus === 'bir' && fibrozis === 'hafif') {
+                        report += "Minör tükrük bezi biyopsisi: Fokal lenfositik inflamasyon (Bir fokus), hafif fibrozis";
+                    } else if (fokus === 'bir' && fibrozis === 'belirgin') {
+                        report += "Minör tükrük bezi biyopsisi: Fokal lenfositik inflamasyon (Bir fokus), belirgin fibrozis";
+                    } else if ((fokus === 'iki' || fokus === 'uc' || fokus === 'dort' || fokus === 'bes' || fokus === 'alti' || fokus === 'yedi' || fokus === 'sekiz') && fibrozis === 'yok') {
+                        report += "Minör tükrük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, fibrozis yok";
+                    } else if ((fokus === 'iki' || fokus === 'uc' || fokus === 'dort' || fokus === 'bes' || fokus === 'alti' || fokus === 'yedi' || fokus === 'sekiz') && fibrozis === 'hafif') {
+                        report += "Minör tükrük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, hafif fibrozis";
+                    } else if ((fokus === 'iki' || fokus === 'uc' || fokus === 'dort' || fokus === 'bes' || fokus === 'alti' || fokus === 'yedi' || fokus === 'sekiz') && fibrozis === 'belirgin') {
+                        report += "Minör tükrük bezi biyopsisi: İki veya daha fazla fokus lenfositik inflamasyon, belirgin fibrozis";
+                    }
+                }
+                
+                report += "\n";
+                
+                // Fokus sayısı özeti (sadece glandüler doku varsa)
+                if (yeterlilik !== 'yok') {
+                    report += "\t";
+                    const fokus = document.getElementById('fokus').value;
+                    
+                    if (fokus === 'yok') {
+                        report += "Fokus Sayısı: İnflamasyon yok";
+                    } else if (fokus === 'az') {
+                        report += "Fokus yok";
+                    } else if (fokus === 'bir') {
+                        report += "Fokus sayısı: 1";
+                    } else if (fokus === 'iki') {
+                        report += "Fokus sayısı: 2";
+                    } else if (fokus === 'uc') {
+                        report += "Fokus sayısı: 3";
+                    } else if (fokus === 'dort') {
+                        report += "Fokus sayısı: 4";
+                    } else if (fokus === 'bes') {
+                        report += "Fokus sayısı: 5";
+                    } else if (fokus === 'alti') {
+                        report += "Fokus sayısı: 6";
+                    } else if (fokus === 'yedi') {
+                        report += "Fokus sayısı: 7";
+                    } else if (fokus === 'sekiz') {
+                        report += "Fokus sayısı: 8 ve daha fazla";
+                    }
+                }
+                
+                // Rapor içeriğini güncelle
+                reportContent.textContent = report;
+                
+                // Raporun tamamlanma durumunu kontrol et
+                checkCompletion();
+            }
+            
+            // Seçili seçeneklerin arka planını renklendirme
+            function highlightSelected() {
+                // Radio butonları için
+                document.querySelectorAll('.radio-option').forEach(option => {
+                    const radio = option.querySelector('input[type="radio"]');
+                    if (radio.checked) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+                
+                // Checkbox'lar için
+                document.querySelectorAll('.checkbox-option').forEach(option => {
+                    const checkbox = option.querySelector('input[type="checkbox"]');
+                    if (checkbox.checked) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+                
+                // Fokus kutuları için
+                document.querySelectorAll('.fokus-box').forEach(box => {
+                    const fokusValue = box.getAttribute('data-fokus');
+                    const fokusInput = document.getElementById('fokus');
+                    if (fokusInput.value === fokusValue) {
+                        box.classList.add('selected');
+                    } else {
+                        box.classList.remove('selected');
+                    }
+                });
+                
+                // Fibrozis kutuları için
+                document.querySelectorAll('.option-box[data-fibrozis]').forEach(box => {
+                    const fibrozisValue = box.getAttribute('data-fibrozis');
+                    const fibrozisInput = document.getElementById('fibrozis');
+                    if (fibrozisInput.value === fibrozisValue) {
+                        box.classList.add('selected');
+                    } else {
+                        box.classList.remove('selected');
+                    }
+                });
+                
+                // Yağlanma kutuları için
+                document.querySelectorAll('.option-box[data-yaglanma]').forEach(box => {
+                    const yaglanmaValue = box.getAttribute('data-yaglanma');
+                    const yaglanmaInput = document.getElementById('yaglanma');
+                    
+                    // Tüm sınıfları temizle
+                    box.classList.remove('selected', 'yellow-selected');
+                    
+                    if (yaglanmaInput.value === yaglanmaValue) {
+                        if (yaglanmaValue === 'var') {
+                            box.classList.add('yellow-selected');
+                        } else {
+                            box.classList.add('selected');
+                        }
+                    }
+                });
+            }
+            
+            // Raporun tamamlanma durumunu kontrol et
+            function checkCompletion() {
+                const yeterlilik = document.querySelector('input[name="yeterlilik"]:checked');
+                const fokus = document.getElementById('fokus');
+                const fibrozis = document.getElementById('fibrozis');
+                const yaglanma = document.getElementById('yaglanma');
+                
+                let isComplete = false;
+                
+                // Eğer glandüler doku yoksa, sadece yeterlilik seçilmesi yeterli
+                if (yeterlilik && yeterlilik.value === 'yok') {
+                    isComplete = true;
+                } 
+                // Diğer durumlarda tüm alanların seçilmesi gerekli
+                else if (yeterlilik && fokus.value && fibrozis.value && yaglanma.value) {
+                    isComplete = true;
+                }
+                
+                // Tamamlama göstergesini güncelle
+                if (isComplete) {
+                    completionIndicator.classList.add('show');
+                } else {
+                    completionIndicator.classList.remove('show');
+                }
+            }
+            
+            // Formu sıfırlama fonksiyonu
+            function resetForm() {
+                // Yeterlilik: ilk seçeneği seç
+                document.getElementById('yeterli').checked = true;
+                
+                // Fokus: <1 seçeneğini seç
+                document.getElementById('fokus').value = 'az';
+                
+                // Fibrozis: Belirgin seçeneğini seç
+                document.getElementById('fibrozis').value = 'belirgin';
+                
+                // Yağlanma: Yok seçeneğini seç
+                document.getElementById('yaglanma').value = 'yok';
+                
+                // Diğer bulgular: sadece "Fokus sayımında en yoğun 4 mm2 alan değerlendirilmiştir." seçili
+                document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                document.getElementById('en_yogun').checked = true;
+                
+                // Özel diğer bulguları temizle
+                customOtherInput.value = '';
+                
+                // Boyama: sadece "Masson Trikrom boyası" kalsın
+                const stainContainers = stainsContainer.querySelectorAll('.stain-container');
+                stainContainers.forEach((container, index) => {
+                    if (index > 0) {
+                        container.remove();
+                    } else {
+                        const stainInput = container.querySelector('.stain-input');
+                        stainInput.value = 'Masson Trikrom boyası';
+                    }
+                });
+                
+                // İzlenen mm2 alanını varsayılan değere ayarla
+                izlenenInput.value = '1.0';
+                
+                // Görsel güncellemeler
+                updateReport();
+                highlightSelected();
+                
+                // İlk boyama silme butonunu gizle
+                const firstRemoveBtn = stainsContainer.querySelector('.remove-stain-btn');
+                if (firstRemoveBtn) {
+                    firstRemoveBtn.style.display = 'none';
+                }
+            }
+            
+            // Boyama ekleme fonksiyonu
+            addStainBtn.addEventListener('click', function() {
+                const newStainContainer = document.createElement('div');
+                newStainContainer.className = 'stain-container';
+                
+                const newStainInput = document.createElement('input');
+                newStainInput.type = 'text';
+                newStainInput.className = 'stain-input';
+                newStainInput.placeholder = 'Boyama adı';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-stain-btn';
+                removeBtn.textContent = 'Sil';
+                
+                removeBtn.addEventListener('click', function() {
+                    newStainContainer.remove();
+                    updateReport();
+                });
+                
+                newStainInput.addEventListener('input', updateReport);
+                
+                newStainContainer.appendChild(newStainInput);
+                newStainContainer.appendChild(removeBtn);
+                stainsContainer.appendChild(newStainContainer);
+                
+                // İlk boyama silme butonunu göster
+                const firstRemoveBtn = stainsContainer.querySelector('.remove-stain-btn');
+                if (firstRemoveBtn) {
+                    firstRemoveBtn.style.display = 'inline-block';
+                }
+                
+                newStainInput.focus();
+            });
+            
+            // İlk boyama silme butonu
+            const firstRemoveBtn = stainsContainer.querySelector('.remove-stain-btn');
+            if (firstRemoveBtn) {
+                firstRemoveBtn.addEventListener('click', function() {
+                    if (stainsContainer.children.length > 1) {
+                        this.parentElement.remove();
+                        updateReport();
+                        
+                        // Sadece bir boyama kaldıysa silme butonunu gizle
+                        if (stainsContainer.children.length === 1) {
+                            const remainingRemoveBtn = stainsContainer.querySelector('.remove-stain-btn');
+                            if (remainingRemoveBtn) {
+                                remainingRemoveBtn.style.display = 'none';
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Tüm inputlara olay dinleyici ekle
+            document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+                input.addEventListener('change', function() {
+                    updateReport();
+                    highlightSelected();
+                });
+            });
+            
+            // Boyama inputlarına olay dinleyici ekle
+            document.querySelectorAll('.stain-input').forEach(input => {
+                input.addEventListener('input', updateReport);
+            });
+            
+            // İzlenen mm2 inputuna olay dinleyici ekle
+            izlenenInput.addEventListener('input', updateReport);
+            
+            // Özel diğer bulgular inputuna olay dinleyici ekle
+            customOtherInput.addEventListener('input', updateReport);
+            
+            // Fokus kutularına tıklama olayı ekle
+            document.querySelectorAll('.fokus-box').forEach(box => {
+                box.addEventListener('click', function() {
+                    const fokusValue = this.getAttribute('data-fokus');
+                    document.getElementById('fokus').value = fokusValue;
+                    updateReport();
+                    highlightSelected();
+                });
+            });
+            
+            // Fibrozis kutularına tıklama olayı ekle
+            document.querySelectorAll('.option-box[data-fibrozis]').forEach(box => {
+                box.addEventListener('click', function() {
+                    const fibrozisValue = this.getAttribute('data-fibrozis');
+                    document.getElementById('fibrozis').value = fibrozisValue;
+                    updateReport();
+                    highlightSelected();
+                });
+            });
+            
+            // Yağlanma kutularına tıklama olayı ekle
+            document.querySelectorAll('.option-box[data-yaglanma]').forEach(box => {
+                box.addEventListener('click', function() {
+                    const yaglanmaValue = this.getAttribute('data-yaglanma');
+                    document.getElementById('yaglanma').value = yaglanmaValue;
+                    updateReport();
+                    highlightSelected();
+                });
+            });
+            
+            // Sıfırla butonuna olay dinleyici ekle
+            resetButton.addEventListener('click', resetForm);
+            
+            // Kopyala butonuna olay dinleyici ekle
+            copyButton.addEventListener('click', function() {
+                // Rapor içeriğini panoya kopyala
+                navigator.clipboard.writeText(reportContent.textContent)
+                    .then(() => {
+                        // Bildirimi göster
+                        notification.classList.add('show');
+                        
+                        // 3 saniye sonra bildirimi gizle
+                        setTimeout(() => {
+                            notification.classList.remove('show');
+                        }, 3000);
+                    })
+                    .catch(err => {
+                        console.error('Panoya kopyalama başarısız:', err);
+                    });
+            });
+            
+            // Başlangıçta raporu oluştur ve seçimleri vurgula
+            updateReport();
+            highlightSelected();
+        });
+    </script>
 </body>
 </html>
