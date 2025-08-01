@@ -593,7 +593,7 @@
                     if (fokus === 'yok') {
                         report += "İnflamasyon yok";
                     } else if (fokus === 'az') {
-                        report += "Bir fokusdan az inflamasyon. (Fokus: 50 lenfosit topluluğu)";
+                        report += "Bir fokusdan az inflamasyon";
                     } else if (fokus === 'bir') {
                         report += "Bir fokus inflamasyon. (Fokus: 50 lenfosit topluluğu)";
                     } else if (fokus === 'iki') {
@@ -658,6 +658,28 @@
                     
                     if (otherItems.length > 0) {
                         report += "Diğer:\t" + otherItems.join(" ");
+                    }
+                } else {
+                    // Glandüler doku yok durumunda da diğer bilgileri göster
+                    const otherItems = [];
+                    if (document.getElementById('en_yogun').checked) otherItems.push("Fokus sayımında en yoğun 4 mm2 alan değerlendirilmiştir.");
+                    if (document.getElementById('toplam').checked) otherItems.push("Fokus sayımında tüm gland yapılarındaki toplam sayı verilmiştir.");
+                    if (document.getElementById('plazma_nadir').checked) otherItems.push("Nadir plazma hücresi izlenmiştir.");
+                    if (document.getElementById('plazma_topluluk').checked) otherItems.push("Plazma hücresi topluluğu (>10 hücre) izlenmiştir.");
+                    if (document.getElementById('onkositik').checked) otherItems.push("Duktuslarda onkositik metaplazi vardır.");
+                    if (document.getElementById('dev_konfluen').checked) otherItems.push("Dev / Konfluen fokus vardır.");
+                    if (document.getElementById('germinal').checked) otherItems.push("Germinal merkez izlenmiştir.");
+                    
+                    // Özel diğer bulgular
+                    const customOther = customOtherInput.value.trim();
+                    if (customOther) {
+                        otherItems.push(customOther);
+                    }
+                    
+                    if (otherItems.length > 0) {
+                        report += "Diğer:\t" + otherItems.join(" ");
+                    } else {
+                        report += "Diğer:\t";
                     }
                 }
                 
